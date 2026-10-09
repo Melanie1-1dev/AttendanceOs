@@ -57,7 +57,7 @@ function AuthenticatedApp() {
 
 function App() {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <ThemeProvider defaultTheme="light">
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
           <ReaderProvider>

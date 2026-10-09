@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @config "./tailwind.config.js";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #F8F9FC;

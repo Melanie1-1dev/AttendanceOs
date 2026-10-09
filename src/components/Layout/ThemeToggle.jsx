@@ -1,11 +1,11 @@
 import React from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function ThemeToggle({ variant = "bar", collapsed = false }) {
-  const { resolvedTheme, setTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const { theme, setTheme } = useTheme();
+  const isDark = theme === "dark";
 
   if (variant === "sidebar") {
     return (
@@ -16,7 +16,7 @@ export default function ThemeToggle({ variant = "bar", collapsed = false }) {
           collapsed && "justify-center px-0"
         )}
       >
-        {isDark ? <Sun className="h-[18px] w-[18px] shrink-0" /> : <Moon className="h-[18px] w-[18px] shrink-0" />}
+        {isDark ? <Sun className="h-4.5 w-4.5 shrink-0" /> : <Moon className="h-4.5 w-4.5 shrink-0" />}
         {!collapsed && <span>{isDark ? "Light mode" : "Dark mode"}</span>}
       </button>
     );

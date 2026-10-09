@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 import { toast } from "sonner";
 import { CreditCard, Moon, Radio, Sparkles, Sun, User, Users, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ function Panel({ icon: Icon, title, description, children }) {
 export default function Settings() {
   const user = useCurrentUser();
   const { isOnline, toggle } = useReader();
-  const { setTheme, resolvedTheme } = useTheme();
+  const { setTheme, theme } = useTheme();
   const [counts, setCounts] = useState(null);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function Settings() {
         <Panel icon={isOnline ? Sun : Moon} title="Appearance" description="Switch between light and dark mode.">
           <div className="flex gap-2">
             <Button
-              variant={resolvedTheme === "light" ? "default" : "outline"}
+              variant={theme === "light" ? "default" : "outline"}
               className="flex-1"
               onClick={() => {
                 setTheme("light");
@@ -91,7 +91,7 @@ export default function Settings() {
               Light
             </Button>
             <Button
-              variant={resolvedTheme === "dark" ? "default" : "outline"}
+              variant={theme === "dark" ? "default" : "outline"}
               className="flex-1"
               onClick={() => {
                 setTheme("dark");

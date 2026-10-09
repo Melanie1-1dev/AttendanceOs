@@ -71,11 +71,11 @@ export default function AttendanceTrendChart({ sessions, attendance, students })
   );
 
   return (
-    <section className="surface p-5 sm:p-6">
+    <section className="surface p-6">
       <header className="mb-4 flex items-center justify-between gap-3">
         <div>
           <p className="font-heading text-base font-bold tracking-tight">Attendance Trends</p>
-          <p className="text-xs text-muted-foreground">Daily present vs absent over the last 30 days.</p>
+          <p className="text-sm text-muted-foreground">Daily present vs absent over the last 30 days.</p>
         </div>
         <CalendarRange className="h-5 w-5 shrink-0 text-muted-foreground" />
       </header>
@@ -87,24 +87,24 @@ export default function AttendanceTrendChart({ sessions, attendance, students })
           description="Once sessions are held and scanned, trends will appear here."
         />
       ) : (
-        <div className="h-[260px] w-full">
+        <div className="h-[280px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={points} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
               <defs>
                 <linearGradient id="presentFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="var(--chart-2)" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="var(--chart-2)" stopOpacity={0.02} />
                 </linearGradient>
                 <linearGradient id="absentFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-5))" stopOpacity={0.28} />
-                  <stop offset="100%" stopColor="hsl(var(--chart-5))" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="var(--chart-5)" stopOpacity={0.28} />
+                  <stop offset="100%" stopColor="var(--chart-5)" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" strokeOpacity={0.5} vertical={false} />
               <XAxis
                 dataKey="label"
                 tick={{ fontSize: 11 }}
-                stroke="hsl(var(--muted-foreground))"
+                stroke="var(--muted-foreground)"
                 tickLine={false}
                 axisLine={false}
                 minTickGap={20}
@@ -112,14 +112,14 @@ export default function AttendanceTrendChart({ sessions, attendance, students })
               <YAxis
                 allowDecimals={false}
                 tick={{ fontSize: 11 }}
-                stroke="hsl(var(--muted-foreground))"
+                stroke="var(--muted-foreground)"
                 tickLine={false}
                 axisLine={false}
                 width={32}
               />
               <Tooltip content={<TrendTooltip />} />
-              <Area type="monotone" dataKey="present" name="Present" stroke="hsl(var(--chart-2))" strokeWidth={2} fill="url(#presentFill)" />
-              <Area type="monotone" dataKey="absent" name="Absent" stroke="hsl(var(--chart-5))" strokeWidth={2} fill="url(#absentFill)" />
+              <Area type="monotone" dataKey="present" name="Present" stroke="var(--chart-2)" strokeWidth={2} fill="url(#presentFill)" />
+              <Area type="monotone" dataKey="absent" name="Absent" stroke="var(--chart-5)" strokeWidth={2} fill="url(#absentFill)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
