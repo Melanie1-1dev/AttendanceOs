@@ -1,8 +1,9 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, CalendarClock, CalendarDays, CreditCard, Settings, ScanLine, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutDashboard, CalendarClock, CalendarDays, CreditCard, Settings, ScanLine, X, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "@/components/layout/ThemeToggle";
+import { useAuth } from "@/lib/AuthContext";
 import useCurrentUser from "@/lib/use-current-user";
 import { initials } from "@/lib/attendance-utils";
 
@@ -48,6 +49,7 @@ function NavItem({ item, collapsed, onNavigate }) {
 
 export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) {
   const user = useCurrentUser();
+  const { logout } = useAuth();
   const name = user?.full_name || "Teacher";
 
   return (
@@ -132,6 +134,20 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
               </div>
             )}
           </div>
+
+          <button
+            type="button"
+            onClick={logout}
+            aria-label="Log out"
+            title={collapsed ? "Log out" : undefined}
+            className={cn(
+              "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-sidebar-foreground transition-colors hover:bg-rose-500/10 hover:text-rose-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+              collapsed && "justify-center px-0"
+            )}
+          >
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
+            {!collapsed && <span>Log out</span>}
+          </button>
 
           <button
             onClick={onToggleCollapse}
