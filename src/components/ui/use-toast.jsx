@@ -36,14 +36,6 @@ const addToRemoveQueue = (toastId) => {
   toastTimeouts.set(toastId, timeout);
 };
 
-const _clearFromRemoveQueue = (toastId) => {
-  const timeout = toastTimeouts.get(toastId);
-  if (timeout) {
-    clearTimeout(timeout);
-    toastTimeouts.delete(toastId);
-  }
-};
-
 export const reducer = (state, action) => {
   switch (action.type) {
     case actionTypes.ADD_TOAST:

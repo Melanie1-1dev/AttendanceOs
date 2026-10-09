@@ -1,36 +1,38 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/common/EmptyState";
 import { TableSkeleton } from "@/components/common/Skeletons";
 import TimetableBoard from "@/components/timetable/TimetableBoard";
 import CreateSessionModal from "@/components/sessions/CreateSessionModal";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { DAYS, todayKey, weekDates } from "@/lib/timetable";
+
+const EMPTY_SESSIONS = [];
 
 export default function Timetable() {
   const navigate = useNavigate();
-  const [slots, setSlots] = useState(null);
-  const [sessions, setSessions] = useState([]);
+  const { data, isError, refetch } = useQuery({
+    queryKey: ["timetable"],
+    queryFn: async () => {
+      const [slots, sessions] = await Promise.all([
+        api.entities.TimetableSlot.list("start_time", 200),
+        api.entities.Session.list("-date", 200),
+      ]);
+      return { slots, sessions };
+    },
+  });
+  const slots = data?.slots ?? null;
+  const sessions = data?.sessions ?? EMPTY_SESSIONS;
   const [selectedDay, setSelectedDay] = useState(todayKey);
   const [createOpen, setCreateOpen] = useState(false);
   const [prefill, setPrefill] = useState(null);
 
   const dates = useMemo(() => weekDates(), []);
 
-  const refresh = useCallback(async () => {
-    const [slotList, sessionList] = await Promise.all([
-      base44.entities.TimetableSlot.list("start_time", 200),
-      base44.entities.Session.list("-date", 200),
-    ]);
-    setSlots(slotList);
-    setSessions(sessionList);
-  }, []);
-
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
+  const refresh = useCallback(() => refetch(), [refetch]);
 
   const board = useMemo(() => {
     const grouped = {};
@@ -107,7 +109,14 @@ export default function Timetable() {
         </div>
       </div>
 
-      {!slots ? (
+      {isError ? (
+        <div className="surface p-6 text-center" role="alert">
+          <p className="font-semibold">Could not load the timetable.</p>
+          <button className="mt-3 text-sm font-semibold text-primary hover:underline" onClick={() => refetch()}>
+            Try again
+          </button>
+        </div>
+      ) : !slots ? (
         <TableSkeleton rows={4} />
       ) : slots.length === 0 ? (
         <EmptyState

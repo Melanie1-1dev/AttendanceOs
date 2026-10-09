@@ -7,17 +7,17 @@ export function useResponsiveImage({ parsed, fittingType, focalPoint, quality, c
   const wrapperRef = React.useRef(null)
   const imgRef = React.useRef(null)
   const size = useSize(wrapperRef)
-  const [loaded, setLoaded] = React.useState(false)
+  const [loadedSource, setLoadedSource] = React.useState(null)
+  const loaded = loadedSource === parsed.baseUrl
 
   React.useImperativeHandle(parentRef, () => imgRef.current)
-  React.useEffect(() => setLoaded(false), [parsed.baseUrl])
   React.useEffect(() => {
     const wrapper = wrapperRef.current
     const replace = (event) => onSourceChange(
       event.detail.src, getImagePreviewClassName(className, wrapper.className, cn("inline-block relative", className))
     )
-    wrapper.addEventListener("base44:image-replace", replace)
-    return () => wrapper.removeEventListener("base44:image-replace", replace)
+    wrapper.addEventListener("attendanceos:image-replace", replace)
+    return () => wrapper.removeEventListener("attendanceos:image-replace", replace)
   }, [className, onSourceChange])
 
   const crop = fittingType !== "fit"
@@ -33,7 +33,7 @@ export function useResponsiveImage({ parsed, fittingType, focalPoint, quality, c
   return {
     wrapperRef, imgRef, loaded, options,
     handleLoad: (event) => {
-      setLoaded(true)
+      setLoadedSource(parsed.baseUrl)
       onLoad?.(event)
     },
   }

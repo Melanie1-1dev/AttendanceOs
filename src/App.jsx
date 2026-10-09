@@ -1,78 +1,61 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import { ThemeProvider } from 'next-themes';
+import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster as SonnerToaster } from 'sonner';
 import { ReaderProvider } from '@/lib/reader-context';
-import PageNotFound from './lib/PageNotFound';
-import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import { AuthProvider } from '@/lib/AuthContext';
 import ScrollToTop from './components/ScrollToTop';
-// Add page imports here
-import Login from '@/pages/Login';
-import Register from '@/pages/Register';
-import ForgotPassword from '@/pages/ForgotPassword';
-import ResetPassword from '@/pages/ResetPassword';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Layout from '@/components/Layout';
-import Dashboard from '@/pages/Dashboard';
-import Sessions from '@/pages/Sessions';
-import Timetable from '@/pages/Timetable';
-import SessionDetail from '@/pages/SessionDetail';
-import RfidCards from '@/pages/RfidCards';
-import StudentDetail from '@/pages/StudentDetail';
-import SettingsPage from '@/pages/Settings';
 
-const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+const PageNotFound = lazy(() => import("./lib/PageNotFound"));
+const Login = lazy(() => import("@/pages/Login"));
+const Register = lazy(() => import("@/pages/Register"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Sessions = lazy(() => import("@/pages/Sessions"));
+const Timetable = lazy(() => import("@/pages/Timetable"));
+const SessionDetail = lazy(() => import("@/pages/SessionDetails"));
+const RfidCards = lazy(() => import("@/pages/RfidCards"));
+const StudentDetail = lazy(() => import("@/pages/StudentDetails"));
+const SettingsPage = lazy(() => import("@/pages/Settings"));
 
-  // Show loading spinner while checking app public settings or auth
-  if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+const RouteLoading = () => (
+  <div className="flex min-h-screen items-center justify-center" role="status" aria-label="Loading page">
+    <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-slate-800" />
+  </div>
+);
 
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
-  }
-
-  // Render the main app
+function AuthenticatedApp() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-        <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/sessions" element={<Sessions />} />
-          <Route path="/timetable" element={<Timetable />} />
-          <Route path="/sessions/:id" element={<SessionDetail />} />
-          <Route path="/rfid-cards" element={<RfidCards />} />
-          <Route path="/students/:id" element={<StudentDetail />} />
-          <Route path="/settings" element={<SettingsPage />} />
+    <Suspense fallback={<RouteLoading />}>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/sessions" element={<Sessions />} />
+            <Route path="/timetable" element={<Timetable />} />
+            <Route path="/sessions/:id" element={<SessionDetail />} />
+            <Route path="/rfid-cards" element={<RfidCards />} />
+            <Route path="/students/:id" element={<StudentDetail />} />
+            <Route path="/settings" element={<SettingsPage />} />
+          </Route>
         </Route>
-      </Route>
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </Suspense>
   );
-};
-
+}
 
 function App() {
-
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <AuthProvider>

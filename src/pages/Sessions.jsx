@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import SessionToolbar from "@/components/sessions/SessionToolbar";
 import SessionList from "@/components/sessions/SessionList";
@@ -9,19 +10,16 @@ import { loadClassroom, openSessionRecord } from "@/lib/classroom";
 
 export default function Sessions() {
   const navigate = useNavigate();
-  const [data, setData] = useState(null);
+  const { data, isError, refetch } = useQuery({
+    queryKey: ["classroom"],
+    queryFn: loadClassroom,
+  });
   const [createOpen, setCreateOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [date, setDate] = useState("");
   const [status, setStatus] = useState("all");
 
-  const refresh = useCallback(async () => {
-    setData(await loadClassroom());
-  }, []);
-
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
+  const refresh = useCallback(() => refetch(), [refetch]);
 
   const filtered = useMemo(() => {
     const sessions = data?.sessions || [];
@@ -77,7 +75,14 @@ export default function Sessions() {
         onCreate={() => setCreateOpen(true)}
       />
 
-      {!data ? (
+      {isError ? (
+        <div className="surface p-6 text-center" role="alert">
+          <p className="font-semibold">Could not load the classroom data.</p>
+          <button className="mt-3 text-sm font-semibold text-primary hover:underline" onClick={() => refetch()}>
+            Try again
+          </button>
+        </div>
+      ) : !data ? (
         <TableSkeleton rows={5} />
       ) : (
         <SessionList

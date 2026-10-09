@@ -123,7 +123,6 @@ const FormMessage = React.forwardRef(({ className, children, ...props }, ref) =>
 FormMessage.displayName = "FormMessage"
 
 export {
-  useFormField,
   Form,
   FormItem,
   FormLabel,

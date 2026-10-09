@@ -6,6 +6,7 @@ export default function AnimatedNumber({ value = 0, duration = 1.1, className = 
   const previous = useRef(0);
   const inView = useInView(ref, { once: true, amount: 0.3 });
   const [display, setDisplay] = useState(0);
+  const visibleValue = inView ? display : Number(value) || 0;
 
   useEffect(() => {
     if (!inView) return undefined;
@@ -22,7 +23,7 @@ export default function AnimatedNumber({ value = 0, duration = 1.1, className = 
 
   return (
     <span ref={ref} className={className}>
-      {Math.round(display).toLocaleString()}
+      {Math.round(visibleValue).toLocaleString()}
     </span>
   );
 }

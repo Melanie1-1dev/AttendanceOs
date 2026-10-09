@@ -1,208 +1,92 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@config "./tailwind.config.js";
+
+:root {
+  --background: #F8F9FC;
+  --foreground: #0F1729;
+  --card: #FFFFFF;
+  --card-foreground: #0F1729;
+  --popover: #FFFFFF;
+  --popover-foreground: #0F1729;
+  --primary: #5048E5;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F3F4F7;
+  --secondary-foreground: #0F1729;
+  --muted: #F3F4F7;
+  --muted-foreground: #677183;
+  --accent: #EDECFE;
+  --accent-foreground: #262183;
+  --destructive: #DC2828;
+  --destructive-foreground: #FFFFFF;
+  --success: #10B77F;
+  --success-foreground: #FFFFFF;
+  --warning: #DB7706;
+  --warning-foreground: #FFFFFF;
+  --border: #E4E7EC;
+  --input: #E4E7EC;
+  --ring: #5048E5;
+  --chart-1: #5048E5;
+  --chart-2: #10B77F;
+  --chart-3: #0DA2E7;
+  --chart-4: #FBBE23;
+  --chart-5: #E23670;
+
+  --sidebar-background: #0F1729;
+  --sidebar-foreground: #A6B5CA;
+  --sidebar-primary: #5048E5;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1A243D;
+  --sidebar-accent-foreground: #FFFFFF;
+  --sidebar-border: #1C273F;
+  --sidebar-ring: #5048E5;
+
+  --font-heading: "Plus Jakarta Sans", sans-serif;
+  --font-body: Inter, sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+.dark {
+  --background: #090F1A;
+  --foreground: #F8FAFC;
+  --card: #0F1524;
+  --card-foreground: #F8FAFC;
+  --popover: #0F1524;
+  --popover-foreground: #F8FAFC;
+  --primary: #736CEF;
+  --primary-foreground: #0B111E;
+  --secondary: #1C2436;
+  --secondary-foreground: #F8FAFC;
+  --muted: #1C2436;
+  --muted-foreground: #94A3B8;
+  --accent: #171452;
+  --accent-foreground: #F1F5F9;
+  --destructive: #DD3C3C;
+  --destructive-foreground: #FFFFFF;
+  --success: #22C38D;
+  --success-foreground: #0B111E;
+  --warning: #F49325;
+  --warning-foreground: #0B111E;
+  --border: #20283C;
+  --input: #20283C;
+  --ring: #736CEF;
+  --chart-1: #736CEF;
+  --chart-2: #22C38D;
+  --chart-3: #35B7F3;
+  --chart-4: #FBC641;
+  --chart-5: #E75586;
+}
 
 @layer base {
-  :root {
-    --background: 220 33% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 243 75% 59%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 220 20% 96%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 220 20% 96%;
-    --muted-foreground: 220 12% 46%;
-    --accent: 243 90% 96%;
-    --accent-foreground: 243 60% 32%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 160 84% 39%;
-    --success-foreground: 0 0% 100%;
-    --warning: 32 95% 44%;
-    --warning-foreground: 0 0% 100%;
-    --border: 220 18% 91%;
-    --input: 220 18% 91%;
-    --ring: 243 75% 59%;
-    --chart-1: 243 75% 59%;
-    --chart-2: 160 84% 39%;
-    --chart-3: 199 89% 48%;
-    --chart-4: 43 96% 56%;
-    --chart-5: 340 75% 55%;
-    --radius: 0.9rem;
-    --font-heading: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-    --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
-    --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 215 25% 72%;
-    --sidebar-primary: 243 75% 59%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 40% 17%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 222 38% 18%;
-    --sidebar-ring: 243 75% 59%;
-  }
-
-  .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 98%;
-    --card: 222 42% 10%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 42% 10%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 243 80% 68%;
-    --primary-foreground: 222 47% 8%;
-    --secondary: 222 32% 16%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 222 32% 16%;
-    --muted-foreground: 215 20% 65%;
-    --accent: 243 40% 20%;
-    --accent-foreground: 210 40% 96%;
-    --destructive: 0 70% 55%;
-    --destructive-foreground: 0 0% 100%;
-    --success: 160 70% 45%;
-    --success-foreground: 222 47% 8%;
-    --warning: 32 90% 55%;
-    --warning-foreground: 222 47% 8%;
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
-    --ring: 243 80% 68%;
-    --chart-1: 243 80% 68%;
-    --chart-2: 160 70% 45%;
-    --chart-3: 199 89% 58%;
-    --chart-4: 43 96% 62%;
-    --chart-5: 340 75% 62%;
-  }
-
-  * {
-    @apply border-border outline-ring/50;
-  }
-
-  html {
-    -webkit-text-size-adjust: 100%;
-  }
-
   body {
     @apply bg-background font-body text-foreground antialiased;
   }
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-heading;
-  }
 }
 
-@layer components {
-  .surface {
-    @apply rounded-2xl border border-border/70 bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.18)];
-  }
-
-  .surface-hover {
-    @apply transition-all duration-300 hover:-translate-y-0.5 hover:border-border hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_44px_-22px_rgba(15,23,42,0.26)];
-  }
-
-  .uid-chip {
-    @apply inline-flex items-center rounded-md bg-slate-900/5 px-2 py-0.5 font-mono text-[11px] tracking-tight text-slate-700 dark:bg-white/10 dark:text-slate-200;
-  }
+.surface {
+  @apply rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm;
 }
 
-@layer utilities {
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
-
-@keyframes rise-in {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes rfid-ring {
-  0% {
-    transform: scale(0.55);
-    opacity: 0.5;
-  }
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
-}
-
-@keyframes rfid-sweep {
-  0% {
-    transform: translateY(-150%);
-  }
-  100% {
-    transform: translateY(150%);
-  }
-}
-
-@keyframes soft-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-
-@keyframes dash-move {
-  to {
-    stroke-dashoffset: -24;
-  }
-}
-
-.rise-in {
-  animation: rise-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
-.rfid-ring {
-  animation: rfid-ring 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-
-.rfid-ring-2 {
-  animation-delay: 0.9s;
-}
-
-.rfid-ring-3 {
-  animation-delay: 1.8s;
-}
-
-.rfid-sweep {
-  animation: rfid-sweep 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite;
-}
-
-.soft-float {
-  animation: soft-float 3.4s ease-in-out infinite;
-}
-
-.dash-move {
-  animation: dash-move 0.8s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .rfid-ring,
-  .rfid-sweep,
-  .soft-float,
-  .dash-move {
-    animation: none;
-  }
+.uid-chip {
+  @apply inline-flex rounded-md border border-border bg-muted px-2 py-1 font-mono text-xs font-semibold text-foreground;
 }

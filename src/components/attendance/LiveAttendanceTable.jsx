@@ -54,10 +54,12 @@ export default function LiveAttendanceTable({ session, students = [], records = 
       row.student.student_code.toLowerCase().includes(needle) ||
       (row.uid || "").toLowerCase().includes(needle);
 
-    let base = [];
-    if (filter === "present") base = presentRows.filter(matches);
-    else if (filter === "absent") base = absentRows.filter(matches);
-    else base = [...presentRows.filter(matches), ...absentRows.filter(matches)];
+    const base =
+      filter === "present"
+        ? presentRows.filter(matches)
+        : filter === "absent"
+          ? absentRows.filter(matches)
+          : [...presentRows.filter(matches), ...absentRows.filter(matches)];
 
     const sorted = [...base];
     if (sort === "recent") {

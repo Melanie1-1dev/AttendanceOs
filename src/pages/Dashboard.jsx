@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import GreetingHeader from "@/components/dashboard/GreetingHeader";
 import StatGrid from "@/components/dashboard/StatGrid";
@@ -11,15 +11,10 @@ import { rosterOf, toISODate } from "@/lib/attendance-utils";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [data, setData] = useState(null);
-
-  const refresh = useCallback(async () => {
-    setData(await loadClassroom());
-  }, []);
-
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
+  const { data, isError, refetch } = useQuery({
+    queryKey: ["classroom"],
+    queryFn: loadClassroom,
+  });
 
   const handleAction = async (session) => {
     if (session.status === "scheduled") {
@@ -49,7 +44,14 @@ export default function Dashboard() {
     <div className="space-y-6">
       <GreetingHeader />
 
-      {!data ? (
+      {isError ? (
+        <div className="surface p-6 text-center" role="alert">
+          <p className="font-semibold">Could not load the classroom data.</p>
+          <button className="mt-3 text-sm font-semibold text-primary hover:underline" onClick={() => refetch()}>
+            Try again
+          </button>
+        </div>
+      ) : !data ? (
         <div className="space-y-6">
           <StatGridSkeleton />
           <CardGridSkeleton count={3} />

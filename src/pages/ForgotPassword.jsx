@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Mail, ArrowLeft, Loader2 } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
+import { toast } from "sonner";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [resetUrl, setResetUrl] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await base44.auth.resetPasswordRequest(email);
-    } catch {
-      // Always show success regardless
+      const result = await api.auth.resetPasswordRequest(email);
+      setResetUrl(result.resetUrl || "");
+      setSent(true);
+    } catch (error) {
+      toast.error(error.message || "Could not request a password reset.");
     } finally {
       setLoading(false);
-      setSent(true);
     }
   };
 
@@ -37,9 +40,16 @@ export default function ForgotPassword() {
       }
     >
       {sent ? (
-        <p className="text-sm text-foreground text-center">
-          If an account exists with that email, you'll receive a password reset link shortly.
-        </p>
+        <div className="space-y-3 text-center">
+          <p className="text-sm text-foreground">
+            If an account exists with that email, you'll receive a password reset link shortly.
+          </p>
+          {resetUrl && (
+            <a className="break-all text-sm font-medium text-primary hover:underline" href={resetUrl}>
+              Open local demo reset link
+            </a>
+          )}
+        </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">

@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { ArrowLeft, CalendarDays, Clock, Lock, MapPin, PlayCircle, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import StatusBadge from "@/components/common/StatusBadge";
 import EmptyState from "@/components/common/EmptyState";
 import { TableSkeleton } from "@/components/common/Skeletons";
 import AttendanceSummary from "@/components/attendance/AttendanceSummary";
+
 import LiveAttendanceTable from "@/components/attendance/LiveAttendanceTable";
 import RfidScanner from "@/components/rfid/RfidScanner";
 import CloseSessionDialog from "@/components/sessions/CloseSessionDialog";
@@ -15,44 +17,47 @@ import { SESSION_STATUS, formatDate, sessionStats } from "@/lib/attendance-utils
 
 export default function SessionDetail() {
   const { id } = useParams();
-  const [students, setStudents] = useState([]);
-  const [session, setSession] = useState(null);
-  const [records, setRecords] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["classroom"],
+    queryFn: loadClassroom,
+  });
+  const students = data?.students || [];
+  const session = data?.sessions.find((item) => item.id === id) || null;
+  const records = data?.attendance.filter((item) => item.session_id === id) || [];
   const [closeOpen, setCloseOpen] = useState(false);
   const [latestId, setLatestId] = useState(null);
 
-  const refresh = useCallback(async () => {
-    const data = await loadClassroom();
-    setStudents(data.students);
-    setSession(data.sessions.find((item) => item.id === id) || null);
-    setRecords(data.attendance.filter((item) => item.session_id === id));
-    setLoading(false);
-  }, [id]);
-
-  useEffect(() => {
-    setLoading(true);
-    refresh();
-  }, [refresh]);
-
   const handleOpen = async () => {
     await openSessionRecord(session);
-    setSession((prev) => ({ ...prev, status: "open", opened_at: new Date().toISOString() }));
+    await refetch();
     toast.success("Session opened", { description: `${session.subject} is now accepting RFID scans.` });
   };
 
   const handleClose = async () => {
     await closeSessionRecord(session);
-    setSession((prev) => ({ ...prev, status: "completed", closed_at: new Date().toISOString() }));
+    await refetch();
     setCloseOpen(false);
     toast.success("Session closed", { description: "Attendance is now locked for this session." });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-5">
         <TableSkeleton rows={4} />
         <TableSkeleton rows={5} />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="surface p-6 text-center" role="alert">
+        <p className="font-semibold">Could not load this session.</p>
+        <button className="mt-3 text-sm font-semibold text-primary hover:underline" onClick={() => refetch()}>
+          Try again
+        </button>
       </div>
     );
   }
@@ -147,11 +152,15 @@ export default function SessionDetail() {
         students={students}
         records={records}
         onRecorded={(record) => {
-          setRecords((prev) => [...prev, record]);
+          queryClient.setQueryData(["classroom"], (current) =>
+            current ? { ...current, attendance: [...current.attendance, record] } : current
+          );
           setLatestId(record.id);
         }}
         onOpenSession={handleOpen}
-        onAssignCard={() => {}}
+        onAssignCard={(options) =>
+          navigate(`/rfid-cards?assign=${options?.reassign ? "reassign" : "new"}`)
+        }
       />
 
       <LiveAttendanceTable session={session} students={students} records={records} latestId={latestId} />

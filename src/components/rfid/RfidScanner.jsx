@@ -14,7 +14,7 @@ import { formatElapsed } from "@/lib/attendance-utils";
 export default function RfidScanner({ session, students, records, onRecorded, onOpenSession, onAssignCard }) {
   const navigate = useNavigate();
   const { isOnline, goOnline } = useReader();
-  const [tick, setTick] = useState(0);
+  const [, refreshElapsed] = useState(0);
   const scanner = useAttendanceScanner({ session, students, records, onRecorded });
 
   const locked = !session || session.status !== "open";
@@ -22,7 +22,7 @@ export default function RfidScanner({ session, students, records, onRecorded, on
   const view = scanner.state === "idle" && lockedState ? lockedState : scanner.state;
 
   useEffect(() => {
-    const id = setInterval(() => setTick((value) => value + 1), 1000);
+    const id = setInterval(() => refreshElapsed((value) => value + 1), 1000);
     return () => clearInterval(id);
   }, []);
 

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CalendarDays, CheckCircle2, CreditCard, Download, History, Percent, Timer, UserX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import StatCard from "@/components/common/StatCard";
@@ -27,31 +28,30 @@ const CARD_NONE =
 export default function StudentDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [student, setStudent] = useState(null);
-  const [sessions, setSessions] = useState([]);
-  const [attendance, setAttendance] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["classroom"],
+    queryFn: loadClassroom,
+  });
+  const student = data?.students.find((item) => item.id === id) || null;
+  const sessions = data?.sessions || [];
+  const attendance = data?.attendance || [];
 
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
-    loadClassroom().then((data) => {
-      if (!active) return;
-      setStudent(data.students.find((item) => item.id === id) || null);
-      setSessions(data.sessions);
-      setAttendance(data.attendance);
-      setLoading(false);
-    });
-    return () => {
-      active = false;
-    };
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-5">
         <StatGridSkeleton />
         <TableSkeleton rows={6} />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="surface p-6 text-center" role="alert">
+        <p className="font-semibold">Could not load this student's attendance.</p>
+        <button className="mt-3 text-sm font-semibold text-primary hover:underline" onClick={() => refetch()}>
+          Try again
+        </button>
       </div>
     );
   }

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { CalendarPlus } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { CLASS_OPTIONS } from "@/lib/classroom";
 import { toISODate } from "@/lib/attendance-utils";
 import useCurrentUser from "@/lib/use-current-user";
@@ -20,18 +20,25 @@ const EMPTY = {
   end_time: "10:00",
 };
 
-export default function CreateSessionModal({ open, onOpenChange, onCreated, initialValues }) {
+export default function CreateSessionModal(props) {
   const user = useCurrentUser();
-  const [form, setForm] = useState(EMPTY);
+  const key = JSON.stringify([props.open, props.initialValues, user?.id, user?.full_name]);
+  return (
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <CreateSessionForm key={key} {...props} user={user} />
+    </Dialog>
+  );
+}
+
+function CreateSessionForm({ onOpenChange, onCreated, initialValues, user }) {
+  const [form, setForm] = useState(() => ({
+    ...EMPTY,
+    date: toISODate(),
+    teacher_name: user?.full_name || "",
+    ...(initialValues || {}),
+  }));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-
-  useEffect(() => {
-    if (open) {
-      setForm({ ...EMPTY, date: toISODate(), teacher_name: user?.full_name || "", ...(initialValues || {}) });
-      setError("");
-    }
-  }, [open, user, initialValues]);
 
   const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -45,7 +52,7 @@ export default function CreateSessionModal({ open, onOpenChange, onCreated, init
     setSaving(true);
     setError("");
     try {
-      const created = await base44.entities.Session.create({
+      const created = await api.entities.Session.create({
         ...form,
         subject: form.subject.trim(),
         teacher_name: form.teacher_name.trim() || user?.full_name || "Teacher",
@@ -56,15 +63,14 @@ export default function CreateSessionModal({ open, onOpenChange, onCreated, init
       onCreated?.(created);
       onOpenChange(false);
     } catch (err) {
-      setError("The session could not be saved. Please try again.");
+      setError(err.message || "The session could not be saved. Please try again.");
     } finally {
       setSaving(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+    <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <CalendarPlus className="h-5 w-5" />
@@ -161,7 +167,6 @@ export default function CreateSessionModal({ open, onOpenChange, onCreated, init
             </Button>
           </DialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+    </DialogContent>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +30,8 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      await base44.auth.register({ email, password });
+      const result = await api.auth.register({ email, password });
+      setVerificationCode(result.verificationCode || "");
       setShowOtp(true);
     } catch (err) {
       setError(err.message || "Registration failed");
@@ -42,9 +44,9 @@ export default function Register() {
     setError("");
     setLoading(true);
     try {
-      const result = await base44.auth.verifyOtp({ email, otpCode });
+      const result = await api.auth.verifyOtp({ email, otpCode });
       if (result?.access_token) {
-        base44.auth.setToken(result.access_token);
+        api.auth.setToken(result.access_token);
       }
       window.location.href = safeReturnTo();
     } catch (err) {
@@ -57,18 +59,24 @@ export default function Register() {
   const handleResend = async () => {
     setError("");
     try {
-      await base44.auth.resendOtp(email);
+      const result = await api.auth.resendOtp(email);
+      setVerificationCode(result.verificationCode || "");
       toast({
-        title: "Code sent",
-        description: "Check your email for the new code.",
+        title: "Verification code ready",
+        description: "Use the local demo code shown below.",
       });
     } catch (err) {
       setError(err.message || "Failed to resend code");
     }
   };
 
-  const handleGoogle = () => {
-    base44.auth.loginWithProvider("google", safeReturnTo());
+  const handleGoogle = async () => {
+    setError("");
+    try {
+      await api.auth.loginWithProvider("Google");
+    } catch (err) {
+      setError(err.message || "Google sign-in is not configured.");
+    }
   };
 
   if (showOtp) {
@@ -76,7 +84,7 @@ export default function Register() {
       <AuthLayout
         icon={Mail}
         title="Verify your email"
-        subtitle={`We sent a code to ${email}`}
+        subtitle={`Enter the verification code for ${email}`}
       >
         {error && (
           <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
@@ -101,6 +109,11 @@ export default function Register() {
             </InputOTPGroup>
           </InputOTP>
         </div>
+        {verificationCode && (
+          <p className="mb-4 text-center text-sm text-muted-foreground">
+            Local demo code: <span className="font-mono font-semibold text-foreground">{verificationCode}</span>
+          </p>
+        )}
         <Button
           className="w-full h-12 font-medium"
           onClick={handleVerify}

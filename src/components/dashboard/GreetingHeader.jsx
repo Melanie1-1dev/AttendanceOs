@@ -1,129 +1,33 @@
-import React, { useMemo } from "react";
-import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { CalendarRange } from "lucide-react";
-import EmptyState from "@/components/common/EmptyState";
-import { rosterOf, toISODate } from "@/lib/attendance-utils";
+import { CalendarDays } from "lucide-react";
+import useCurrentUser from "@/lib/use-current-user";
 
-const DAY_COUNT = 30;
-
-function shortLabel(iso) {
-  const d = new Date(`${iso}T00:00:00`);
-  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-}
-
-function buildSeries(sessions = [], attendance = [], students = []) {
-  const roster = rosterOf(students).length;
-  const heldByDate = new Map();
-
-  sessions.forEach((session) => {
-    if (!session.date || session.status === "scheduled") return;
-    const list = heldByDate.get(session.date) || [];
-    list.push(session);
-    heldByDate.set(session.date, list);
-  });
-
-  const idsByDate = new Map();
-  heldByDate.forEach((list, date) => {
-    idsByDate.set(date, new Set(list.map((s) => s.id)));
-  });
-
-  const points = [];
-  const today = new Date();
-  for (let i = DAY_COUNT - 1; i >= 0; i -= 1) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    const iso = toISODate(d);
-    const ids = idsByDate.get(iso);
-    if (!ids) continue;
-    const present = attendance.filter(
-      (a) => ids.has(a.session_id) && (a.status === "present" || a.status === "late")
-    ).length;
-    const expected = (heldByDate.get(iso) || []).length * roster;
-    const absent = Math.max(expected - present, 0);
-    points.push({
-      date: iso,
-      label: shortLabel(iso),
-      present,
-      absent,
-      rate: expected ? Math.round((present / expected) * 100) : 0,
-    });
-  }
-  return points;
-}
-
-function TrendTooltip({ active, payload }) {
-  if (!active || !payload?.length) return null;
-  const point = payload[0].payload;
-  return (
-    <div className="rounded-lg border border-border/70 bg-popover px-3 py-2 text-xs shadow-md">
-      <p className="font-semibold text-foreground">{point.label}</p>
-      <p className="mt-1 text-emerald-600 dark:text-emerald-400">Present: {point.present}</p>
-      <p className="text-rose-600 dark:text-rose-400">Absent: {point.absent}</p>
-      <p className="mt-1 text-muted-foreground">Rate: {point.rate}%</p>
-    </div>
-  );
-}
-
-export default function AttendanceTrendChart({ sessions, attendance, students }) {
-  const points = useMemo(
-    () => buildSeries(sessions, attendance, students),
-    [sessions, attendance, students]
-  );
+export default function GreetingHeader() {
+  const user = useCurrentUser();
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const firstName = user?.full_name?.trim().split(/\s+/)[0] || "Teacher";
 
   return (
-    <section className="surface p-5 sm:p-6">
-      <header className="mb-4 flex items-center justify-between gap-3">
-        <div>
-          <p className="font-heading text-base font-bold tracking-tight">Attendance Trends</p>
-          <p className="text-xs text-muted-foreground">Daily present vs absent over the last 30 days.</p>
-        </div>
-        <CalendarRange className="h-5 w-5 shrink-0 text-muted-foreground" />
-      </header>
-
-      {points.length === 0 ? (
-        <EmptyState
-          icon={CalendarRange}
-          title="No attendance data yet"
-          description="Once sessions are held and scanned, trends will appear here."
-        />
-      ) : (
-        <div className="h-[260px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={points} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-              <defs>
-                <linearGradient id="presentFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="hsl(var(--chart-2))" stopOpacity={0.02} />
-                </linearGradient>
-                <linearGradient id="absentFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="hsl(var(--chart-5))" stopOpacity={0.28} />
-                  <stop offset="100%" stopColor="hsl(var(--chart-5))" stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" strokeOpacity={0.5} vertical={false} />
-              <XAxis
-                dataKey="label"
-                tick={{ fontSize: 11 }}
-                stroke="hsl(var(--muted-foreground))"
-                tickLine={false}
-                axisLine={false}
-                minTickGap={20}
-              />
-              <YAxis
-                allowDecimals={false}
-                tick={{ fontSize: 11 }}
-                stroke="hsl(var(--muted-foreground))"
-                tickLine={false}
-                axisLine={false}
-                width={32}
-              />
-              <Tooltip content={<TrendTooltip />} />
-              <Area type="monotone" dataKey="present" name="Present" stroke="hsl(var(--chart-2))" strokeWidth={2} fill="url(#presentFill)" />
-              <Area type="monotone" dataKey="absent" name="Absent" stroke="hsl(var(--chart-5))" strokeWidth={2} fill="url(#absentFill)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+    <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 p-6 text-white shadow-lg sm:p-8">
+      <div className="relative z-10">
+        <p className="font-heading text-2xl font-extrabold tracking-tight sm:text-3xl">
+          {greeting}, {firstName}
+        </p>
+        <p className="mt-2 max-w-xl text-sm text-indigo-100">
+          Your classroom attendance at a glance. Open a session to start recording RFID scans.
+        </p>
+        <p className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-indigo-100">
+          <CalendarDays className="h-4 w-4" />
+          {new Date().toLocaleDateString(undefined, {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })}
+        </p>
+      </div>
+      <div aria-hidden="true" className="absolute -right-12 -top-16 h-56 w-56 rounded-full border-[24px] border-white/10" />
+      <div aria-hidden="true" className="absolute -bottom-28 right-24 h-48 w-48 rounded-full bg-white/5" />
     </section>
   );
 }

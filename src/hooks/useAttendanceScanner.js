@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { useReader } from "@/lib/reader-context";
 import { makeUid, nextCardUid, sleep } from "@/lib/attendance-utils";
 
@@ -63,7 +63,7 @@ export default function useAttendanceScanner({ session, students = [], records =
         return;
       }
 
-      const created = await base44.entities.Attendance.create({
+      const created = await api.entities.Attendance.create({
         session_id: session.id,
         student_id: student.id,
         rfid_uid: uid,

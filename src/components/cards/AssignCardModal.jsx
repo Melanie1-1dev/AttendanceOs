@@ -1,31 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 import { CreditCard } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { StepConfirm, StepConflict, StepScan, StepSelect } from "@/components/cards/AssignCardSteps";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import { nextCardUid, sleep } from "@/lib/attendance-utils";
 
 const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
 export default function AssignCardModal({ open, onOpenChange, students, initialStudentId, onAssigned }) {
-  const [step, setStep] = useState("select");
+  const key = `${open}:${initialStudentId || ""}`;
+  return (
+    <AssignCardDialog
+      key={key}
+      open={open}
+      onOpenChange={onOpenChange}
+      students={students}
+      initialStudentId={initialStudentId}
+      onAssigned={onAssigned}
+    />
+  );
+}
+
+function AssignCardDialog({ open, onOpenChange, students, initialStudentId, onAssigned }) {
+  const [step, setStep] = useState(initialStudentId ? "scan" : "select");
   const [selectedId, setSelectedId] = useState(initialStudentId || null);
   const [uid, setUid] = useState("");
   const [owner, setOwner] = useState(null);
   const [scanning, setScanning] = useState(false);
   const [saving, setSaving] = useState(false);
   const [query, setQuery] = useState("");
-
-  useEffect(() => {
-    if (!open) return;
-    setStep(initialStudentId ? "scan" : "select");
-    setSelectedId(initialStudentId || null);
-    setUid("");
-    setOwner(null);
-    setScanning(false);
-    setQuery("");
-  }, [open, initialStudentId]);
 
   const student = students.find((item) => item.id === selectedId) || null;
 
@@ -56,9 +60,9 @@ export default function AssignCardModal({ open, onOpenChange, students, initialS
     setSaving(true);
     try {
       if (owner) {
-        await base44.entities.Student.update(owner.id, { rfid_uid: "" });
+        await api.entities.Student.update(owner.id, { rfid_uid: "" });
       }
-      await base44.entities.Student.update(student.id, {
+      await api.entities.Student.update(student.id, {
         rfid_uid: uid,
         card_assigned_at: new Date().toISOString(),
       });
@@ -68,7 +72,7 @@ export default function AssignCardModal({ open, onOpenChange, students, initialS
       onAssigned?.();
       onOpenChange(false);
     } catch (error) {
-      toast.error("The card could not be saved. Please try again.");
+      toast.error(error.message || "The card could not be saved. Please try again.");
     } finally {
       setSaving(false);
     }

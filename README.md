@@ -1,16 +1,37 @@
-# React + Vite
+# AttendanceOS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AttendanceOS is a classroom attendance dashboard for managing teaching sessions, a weekly timetable, student RFID cards, and live attendance. The interface includes an RFID reader simulator so the main workflows can be tried without physical hardware.
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Requirements: Node.js 20.19+ or 22.12+ and npm.
 
-## React Compiler
+```sh
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Open the local URL printed by Vite. To create a local account, use **Create account**, then enter the verification code displayed on the page. Sign-in, registration, password reset, sample roster, timetable, sessions, and attendance are stored in that browser's local storage.
 
-## Expanding the ESLint configuration
+Other commands:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```sh
+npm run lint
+npm run build
+npm run preview
+```
+
+## Demo and integrations
+
+The app starts with sample students, RFID assignments, one scheduled session, attendance records, and weekly timetable slots. Changes persist in the current browser. Clearing the site's local storage restores the sample data.
+
+This repository currently contains a browser-only demo data adapter, not a production server. Passwords and attendance data are stored in local storage and are not protected for multi-user or sensitive production use. The local verification code is intentionally shown in the registration page; email delivery and Google sign-in require a configured server-side identity provider and are not enabled by this demo adapter.
+
+## Main routes
+
+- `/` — attendance dashboard
+- `/sessions` and `/sessions/:id` — create, open, close, and review sessions
+- `/timetable` — weekly class slots
+- `/rfid-cards` — assign and manage RFID cards
+- `/students/:id` — student attendance details
+- `/settings` — reader simulator and appearance preferences

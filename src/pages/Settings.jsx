@@ -3,7 +3,7 @@ import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { CreditCard, Moon, Radio, Sparkles, Sun, User, Users, WifiOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/client";
 import useCurrentUser from "@/lib/use-current-user";
 import { useReader } from "@/lib/reader-context";
 import { initials, rosterOf } from "@/lib/attendance-utils";
@@ -33,7 +33,7 @@ export default function Settings() {
   const [counts, setCounts] = useState(null);
 
   useEffect(() => {
-    base44.entities.Student.list("student_code", 300).then((students) => {
+    api.entities.Student.list("student_code", 300).then((students) => {
       const roster = rosterOf(students);
       setCounts({
         total: roster.length,
