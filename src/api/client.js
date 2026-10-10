@@ -31,11 +31,16 @@ const today = new Date();
 const todayDate = formatLocalDate(today);
 const todayWeekday = WEEKDAYS[today.getDay()];
 const demoSlots = [
-  { id: "slot-monday", day_of_week: "monday", class_name: "CS Year 3", subject: "Database Systems", teacher_name: "Jordan Lee", room: "Lab 2", start_time: "09:00", end_time: "10:30" },
-  { id: "slot-tuesday", day_of_week: "tuesday", class_name: "CS Year 3", subject: "Network Security", teacher_name: "Morgan Taylor", room: "Room 104", start_time: "10:00", end_time: "11:30" },
-  { id: "slot-wednesday", day_of_week: "wednesday", class_name: "CS Year 3", subject: "Software Engineering", teacher_name: "Jordan Lee", room: "Lab 2", start_time: "13:00", end_time: "14:30" },
-  { id: "slot-thursday", day_of_week: "thursday", class_name: "CS Year 3", subject: "Cloud Computing", teacher_name: "Morgan Taylor", room: "Room 208", start_time: "09:30", end_time: "11:00" },
-  { id: "slot-friday", day_of_week: "friday", class_name: "CS Year 3", subject: "Data Structures", teacher_name: "Jordan Lee", room: "Lab 1", start_time: "11:00", end_time: "12:30" },
+  { id: "slot-monday", day_of_week: "monday", class_name: "CS Year 3", subject: "Database Systems", teacher_name: "Jordan Lee", room: "Lab 2", start_time: "09:00", end_time: "10:30", accent: "violet" },
+  { id: "slot-tuesday", day_of_week: "tuesday", class_name: "CS Year 3", subject: "Network Security", teacher_name: "Morgan Taylor", room: "Room 104", start_time: "10:00", end_time: "11:30", accent: "amber" },
+  { id: "slot-wednesday", day_of_week: "wednesday", class_name: "CS Year 3", subject: "Software Engineering", teacher_name: "Jordan Lee", room: "Lab 2", start_time: "13:00", end_time: "14:30", accent: "sky" },
+  { id: "slot-thursday", day_of_week: "thursday", class_name: "CS Year 3", subject: "Cloud Computing", teacher_name: "Morgan Taylor", room: "Room 208", start_time: "09:30", end_time: "11:00", accent: "rose" },
+  { id: "slot-friday", day_of_week: "friday", class_name: "CS Year 3", subject: "Data Structures", teacher_name: "Jordan Lee", room: "Lab 1", start_time: "11:00", end_time: "12:30", accent: "violet" },
+  { id: "slot-monday-2", day_of_week: "monday", class_name: "CS Year 3", subject: "Discrete Mathematics", teacher_name: "Morgan Taylor", room: "Room 102", start_time: "10:15", end_time: "12:15", accent: "teal" },
+  { id: "slot-tuesday-2", day_of_week: "tuesday", class_name: "CS Year 3", subject: "Operating Systems", teacher_name: "Jordan Lee", room: "Room 101", start_time: "14:00", end_time: "16:00", accent: "indigo" },
+  { id: "slot-wednesday-2", day_of_week: "wednesday", class_name: "CS Year 3", subject: "Computer Networks", teacher_name: "Morgan Taylor", room: "Lab 3", start_time: "16:30", end_time: "18:30", accent: "emerald" },
+  { id: "slot-thursday-2", day_of_week: "thursday", class_name: "CS Year 3", subject: "Statistics for Computing", teacher_name: "Jordan Lee", room: "Room 103", start_time: "13:00", end_time: "15:00", accent: "teal" },
+  { id: "slot-friday-2", day_of_week: "friday", class_name: "CS Year 3", subject: "Database Systems Lab", teacher_name: "Morgan Taylor", room: "Lab 1", start_time: "10:15", end_time: "12:15", accent: "indigo" },
 ];
 const todaySlot = demoSlots.find((slot) => slot.day_of_week === todayWeekday) || demoSlots[0];
 const demoStudents = [

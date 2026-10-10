@@ -26,7 +26,7 @@ function NavItem({ item, collapsed, onNavigate }) {
           "group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
           collapsed && "justify-center px-0",
           isActive
-            ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]"
+            ? "bg-sidebar-primary font-semibold text-sidebar-primary-foreground shadow-md shadow-sidebar-primary/20"
             : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
         )
       }
@@ -39,7 +39,7 @@ function NavItem({ item, collapsed, onNavigate }) {
               isActive ? "opacity-100" : "opacity-0"
             )}
           />
-          <Icon className={cn("h-[18px] w-[18px] shrink-0 transition-colors", isActive && "text-sidebar-primary")} />
+          <Icon className="h-[18px] w-[18px] shrink-0 transition-colors" />
           {!collapsed && <span className="truncate">{item.label}</span>}
         </>
       )}
@@ -109,7 +109,7 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
                 "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                 collapsed && "justify-center px-0",
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  ? "bg-sidebar-primary font-semibold text-sidebar-primary-foreground shadow-md shadow-sidebar-primary/20"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
               )
             }
