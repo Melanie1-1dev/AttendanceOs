@@ -57,7 +57,7 @@ export default function TimetableBoard({ board, dates, selectedDay, onSelectDay,
             <div
               key={day.key}
               className={cn(
-                "flex flex-col gap-3 rounded-2xl border p-3",
+                "flex min-h-[590px] flex-col gap-3 rounded-2xl border p-3",
                 isToday ? "border-primary/30 bg-primary/[0.04]" : "border-border/60 bg-muted/20"
               )}
             >

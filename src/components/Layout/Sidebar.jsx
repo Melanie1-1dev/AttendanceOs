@@ -75,7 +75,7 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
           </div>
           {!collapsed && (
             <div className="min-w-0">
-              <p className="truncate font-heading text-[15px] font-bold tracking-tight text-white">AttendanceOS</p>
+              <p className="truncate font-heading text-[15px] font-bold tracking-tight text-amber-200">AttendanceOS</p>
               <p className="truncate text-[11px] text-sidebar-foreground/80">RFID Attendance Platform</p>
             </div>
           )}
@@ -129,7 +129,7 @@ export default function Sidebar({ open, onClose, collapsed, onToggleCollapse }) 
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-semibold text-white">{name}</p>
+                <p className="truncate text-[13px] font-semibold text-amber-200" title={name}>{name}</p>
                 <p className="truncate text-[11px] text-sidebar-foreground/80">Class Teacher</p>
               </div>
             )}

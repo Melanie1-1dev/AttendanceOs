@@ -11,7 +11,8 @@ export default function GreetingHeader() {
     <section className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 p-6 text-white shadow-lg sm:p-8">
       <div className="relative z-10">
         <p className="font-heading text-2xl font-extrabold tracking-tight sm:text-3xl">
-          {greeting}, {firstName}
+          {greeting},{" "}
+          <span className="text-amber-200">{firstName}</span>
         </p>
         <p className="mt-2 max-w-xl text-sm text-indigo-100">
           Your classroom attendance at a glance. Open a session to start recording RFID scans.

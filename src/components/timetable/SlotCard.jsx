@@ -19,15 +19,15 @@ export default function SlotCard({ slot, session, onOpenSession, onCreate }) {
   const meta = session ? SESSION_STATUS[session.status] || SESSION_STATUS.scheduled : null;
 
   return (
-    <article className="relative overflow-hidden rounded-xl border border-border/70 bg-card transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+    <article className="relative overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
       <span className={cn("absolute inset-y-0 left-0 w-1", tone.bar)} />
-      <div className="space-y-2 py-3 pl-4 pr-3">
-        <span className={cn("inline-flex rounded-md px-1.5 py-0.5 font-mono text-[10px] font-semibold", tone.chip)}>
+      <div className="space-y-1.5 py-2.5 pl-4 pr-3">
+        <span className={cn("inline-flex rounded-full px-2 py-0.5 font-mono text-[10px] font-bold", tone.chip)}>
           {slot.start_time}–{slot.end_time}
         </span>
 
-        <p className="text-[13px] font-semibold leading-snug">{slot.subject}</p>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-sm font-semibold leading-snug">{slot.subject}</p>
+        <p className="text-xs text-muted-foreground">
           {slot.room ? `${slot.room} · ` : ""}
           {slot.teacher_name || "Teacher"}
         </p>
@@ -42,14 +42,14 @@ export default function SlotCard({ slot, session, onOpenSession, onCreate }) {
               pulse={session.status === "open"}
             />
           ) : (
-            <span className="text-[11px] text-muted-foreground">No session yet</span>
+            <span className="text-xs text-muted-foreground">No session yet</span>
           )}
         </div>
 
         <Button
           size="sm"
           variant={session ? "outline" : "default"}
-          className="h-7 w-full text-[11px]"
+          className="h-7 w-full text-xs"
           onClick={() => (session ? onOpenSession(session) : onCreate(slot))}
         >
           {session ? "View Session" : "Create Session"}
