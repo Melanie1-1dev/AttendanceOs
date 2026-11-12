@@ -21,6 +21,17 @@ npm run build
 npm run preview
 ```
 
+## Deploy to Vercel
+
+Import this repository into Vercel as a Vite project. Use the default settings:
+
+- Framework preset: **Vite**
+- Build command: `npm run build`
+- Output directory: `dist`
+- Install command: `npm install`
+
+`vercel.json` rewrites app routes to `index.html`, so refreshing a route such as `/sessions` works in production. No environment variables are required for the demo adapter.
+
 ## Demo and integrations
 
 The app starts with sample students, RFID assignments, one scheduled session, attendance records, and weekly timetable slots. Changes persist in the current browser. Clearing the site's local storage restores the sample data.
