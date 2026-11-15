@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, CalendarClock, CalendarDays, CreditCard, Settings, ScanLine, X, ChevronLeft, ChevronRight, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeToggle from "@/components/layout/ThemeToggle";
+import ThemeToggle from "@/components/Layout/ThemeToggle";
 import { useAuth } from "@/lib/AuthContext";
 import useCurrentUser from "@/lib/use-current-user";
 import { initials } from "@/lib/attendance-utils";

@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { Menu, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
-import ThemeToggle from "@/components/layout/ThemeToggle";
+import ThemeToggle from "@/components/Layout/ThemeToggle";
 import useCurrentUser from "@/lib/use-current-user";
 import { useReader } from "@/lib/reader-context";
 import { initials } from "@/lib/attendance-utils";
